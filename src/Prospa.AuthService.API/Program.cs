@@ -8,12 +8,18 @@ using Prospa.AuthService.Core.Infrastructure;
 using Prospa.AuthService.Core.Infrastructure.Abstractions;
 using Prospa.AuthService.Core.Model.Configuration;
 using Prospa.AuthService.Core.Model.Validators;
+using Prospa.AuthService.Core.Service.Abstractions;
+using Prospa.AuthService.Core.Service;
 using Prospa.AuthService.Core.Utils;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
+
+builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
 
 builder.Services.AddDbContext<ProspaDBContext>(options =>
 {
@@ -23,6 +29,11 @@ builder.Services.AddDbContext<ProspaDBContext>(options =>
 });
 
 builder.Services.AddScoped<ICustomValidator, CustomValidator>();
+
+builder.Services.AddScoped<IJWTService, JWTService>();
+builder.Services.AddScoped<IJWTManager, JWTManager>();
+builder.Services.AddScoped<IKeyPairStore, RSAKeyPairStore>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped(typeof(IRepositoryAsync<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

@@ -63,6 +63,6 @@ namespace Prospa.AuthService.Core.Model.Validators
             }
             return (IValidator)Activator.CreateInstance(validatorType);
         }
-
     }
+
 }
