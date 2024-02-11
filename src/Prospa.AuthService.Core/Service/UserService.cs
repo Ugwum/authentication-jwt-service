@@ -85,7 +85,7 @@ namespace Prospa.AuthService.Core.Service
 
                 var expiry = CryptoHelper.Decrypt(tokendetails.refexp, _appSettings.PrivateKeyPair);
 
-                if (Convert.ToDateTime(expiry) > DateTime.UtcNow) throw new CustomException(AuthStatusCode.LOGIN_REQUIRED.code, AuthStatusCode.LOGIN_REQUIRED.message);
+                if (Convert.ToDateTime(expiry) < DateTime.UtcNow) throw new CustomException(AuthStatusCode.LOGIN_REQUIRED.code, AuthStatusCode.LOGIN_REQUIRED.message);
 
                 var token = await _jwtService.GenerateJWT(tokendetails.usertype, tokendetails.username);
 

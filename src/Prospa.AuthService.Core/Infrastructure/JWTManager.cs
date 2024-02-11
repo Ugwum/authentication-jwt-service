@@ -24,7 +24,8 @@ namespace Prospa.AuthService.Core.Infrastructure
         private readonly ILogger<JWTManager> _logger;
         private readonly ICacheProvider _cacheProvider;
         public JWTManager(IKeyPairStore keyPairStore,
-            IOptions<JWTSettings> jwtOptions, ILogger<JWTManager> logger, ICacheProvider cacheProvider)
+            IOptions<JWTSettings> jwtOptions, ILogger<JWTManager> logger, 
+            ICacheProvider cacheProvider)
         {
             _jwtSettings = jwtOptions.Value;
             _keyPairStore = keyPairStore;
