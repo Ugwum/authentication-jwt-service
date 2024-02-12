@@ -83,7 +83,7 @@ namespace Prospa.AuthService.Core.Service
 
                 if (customUser == null) throw new CustomException(UserStatusCodes.INVALID_USER.code, UserStatusCodes.INVALID_USER.message);
 
-                var expiry = CryptoHelper.Decrypt(tokendetails.refexp, _appSettings.PrivateKeyPair);
+                var expiry = RSACryptoProviderExtension.DecryptWithPrivateKey(tokendetails.refexp, _appSettings.PrivateKeyPair);
 
                 if (Convert.ToDateTime(expiry) < DateTime.UtcNow) throw new CustomException(AuthStatusCode.LOGIN_REQUIRED.code, AuthStatusCode.LOGIN_REQUIRED.message);
 
