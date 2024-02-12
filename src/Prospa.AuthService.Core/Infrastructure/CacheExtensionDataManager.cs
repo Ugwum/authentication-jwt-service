@@ -15,10 +15,10 @@ namespace Prospa.AuthService.Core.Infrastructure
         private readonly RedisConnection _redisConnection;
         private readonly double? _defaultCacheExpiry;
 
-        public CacheExtensionDataManager(ICacheProvider cacheProvider, IOptions<RedisConnection> redisConfig)
+        public CacheExtensionDataManager(ICacheProvider cacheProvider)
         {
             _cacheProvider = cacheProvider;
-            _defaultCacheExpiry = Convert.ToDouble(redisConfig.Value.DefaultCacheExpiration);
+            _defaultCacheExpiry = Convert.ToDouble(90);
         }
 
         public void Refresh(string key, Func<object[], T> onRefresh, params object[] inputParams)

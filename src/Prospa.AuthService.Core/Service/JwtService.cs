@@ -21,16 +21,16 @@ namespace Prospa.AuthService.Core.Service
         private readonly AppSettings _appSettings;
         private readonly IJWTManager _jwtManager;
 
-      //  private readonly ICacheProvider _cacheProvider;
+        private readonly ICacheProvider _cacheProvider;
         private readonly ILogger<JWTService> _logger;
 
         public JWTService(IJWTManager jwtManager, IOptions<JWTSettings> jwtOptions,IOptions<AppSettings> appSettings, 
-            /*ICacheProvider cacheProvider*/ ILogger<JWTService> logger)
+            ICacheProvider cacheProvider, ILogger<JWTService> logger)
         {
             _jwtManager = jwtManager;
             _jwtSettings = jwtOptions;
             _appSettings = appSettings.Value;
-           // _cacheProvider = cacheProvider;
+           _cacheProvider = cacheProvider;
             _logger = logger;
         }
 
@@ -47,7 +47,7 @@ namespace Prospa.AuthService.Core.Service
                     new Claim("username",username),
                     new Claim("usertype",usertype),
                     new Claim("aud", "access"),
-                    new Claim("refexp", CryptoHelper.Encrypt(refreshtimeframe,_appSettings.PrivateKeyPair)),
+                    new Claim("refexp", RSACryptoProviderExtension.EncryptWithPrivateKey(refreshtimeframe,_appSettings.PrivateKeyPair)),
                     new Claim("exp", DateTime.UtcNow.AddMinutes(Convert.ToInt32(time)).ToString()),
                 };
 

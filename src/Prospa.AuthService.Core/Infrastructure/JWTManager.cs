@@ -76,7 +76,7 @@ namespace Prospa.AuthService.Core.Infrastructure
                 if (token == null)
                     throw new CustomException(AuthStatusCode.INVALID_AUTHTOKEN.code,AuthStatusCode.INVALID_AUTHTOKEN.message);
 
-               // if (await IsTokenRevoked(token)) throw new CustomException("TOKEN_REVOKED", $"token revoked");
+               if (await IsTokenRevoked(token)) throw new CustomException("TOKEN_REVOKED", $"token revoked");
 
                 using (RSACryptoServiceProvider publickey = new RSACryptoServiceProvider())
                 {
