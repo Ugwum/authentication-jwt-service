@@ -12,6 +12,7 @@ using Prospa.AuthService.Core.Service.Abstractions;
 using Prospa.AuthService.Core.Service;
 using Prospa.AuthService.Core.Utils;
 using StackExchange.Redis;
+using Prospa.AuthService.Core.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,11 +33,14 @@ builder.Services.AddScoped<ICustomValidator, CustomValidator>();
 
 builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddScoped<IJWTManager, JWTManager>();
+builder.Services.AddScoped<IAuthClientManager, AuthClientManager>();
 builder.Services.AddScoped<IKeyPairStore, RSAKeyPairStore>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped(typeof(IRepositoryAsync<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+builder.Services.AddScoped<AuthClientRepository>();
 
 var redisConnection = builder.Configuration.GetSection("RedisConnection").Get<RedisConnection>();
 
@@ -118,6 +122,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<AuthClientRequestValidator>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
