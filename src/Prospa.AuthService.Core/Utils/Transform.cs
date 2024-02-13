@@ -1,4 +1,5 @@
-﻿using Prospa.AuthService.Core.Model;
+﻿using Prospa.AuthService.Core.DataAccess.Data;
+using Prospa.AuthService.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,23 @@ namespace Prospa.AuthService.Core.Utils
 
             };
         }
+
+        //public static UserVM From(CustomUser loginUser)
+        //{
+        //    return new UserVM
+        //    {
+        //        user_type = loginUser.user_Type,
+        //        biz_captain_property = loginUser.biz_captain_property,
+        //        biz_creation = loginUser.biz_creation,
+        //        date_joined = loginUser.date_joined,
+        //        email = loginUser.email,
+        //        first_name = loginUser.first_name,
+        //        last_name = loginUser.last_name,
+        //        phone = loginUser.phone,
+        //        unregistered_creation = loginUser.unregistered_creation,
+        //        prospa_user_id = loginUser.prospa_user_id,
+
+        //    };
+        //}
     }
 }

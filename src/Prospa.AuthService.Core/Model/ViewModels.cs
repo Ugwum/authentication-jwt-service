@@ -9,7 +9,7 @@ namespace Prospa.AuthService.Core.Model
 
     public class UserVM
     {
-        public string acceesstoken { get; set; }
+        public string accesstoken { get; set; }
         public string email { get; set; }
         
         public string first_name { get; set; }

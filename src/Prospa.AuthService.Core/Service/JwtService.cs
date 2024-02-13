@@ -95,9 +95,9 @@ namespace Prospa.AuthService.Core.Service
 
                 tokenDetail = new DecodedTokenDetail
                 {
-                    aud = jwtToken.Claims.First(x => x.Type == "aud").Value,// To differntiate Access from refresh token
+                    aud = jwtToken.Claims.First(x => x.Type == "aud").Value,
                     username = jwtToken.Claims.First(x => x.Type == "username").Value,
-                    usertype = jwtToken.Claims.First(x => x.Type == "usertype").Value,// Session id
+                    usertype = jwtToken.Claims.First(x => x.Type == "usertype").Value,
                     iss = jwtToken.IssuedAt,
                     exp = jwtToken.ValidTo,
                     refexp = jwtToken.Claims.First(x => x.Type == "refexp").Value
@@ -126,9 +126,9 @@ namespace Prospa.AuthService.Core.Service
 
                 var DecodedToken = new DecodedTokenDetail
                 {
-                    aud = jwtToken.Claims.First(x => x.Type == "aud").Value,// To differntiate Access from refresh token
+                    aud = jwtToken.Claims.First(x => x.Type == "aud").Value,
                     username = jwtToken.Claims.First(x => x.Type == "username").Value,
-                    usertype = jwtToken.Claims.First(x => x.Type == "usertype").Value,// Session id
+                    usertype = jwtToken.Claims.First(x => x.Type == "usertype").Value,
                     iss = jwtToken.IssuedAt,
                     exp = jwtToken.ValidTo,
                     refexp = jwtToken.Claims.First(x => x.Type == "refexp").Value

@@ -44,7 +44,7 @@ namespace Prospa.AuthService.Core.Service
                     var token = await _jwtService.GenerateJWT(userValidation.userobj.user_type, username);
 
                     var userVM = Transform.From(userValidation.userobj);
-                    userVM.acceesstoken = token;
+                    userVM.accesstoken = token;
 
                     return new RequestResult
                     {
@@ -89,7 +89,7 @@ namespace Prospa.AuthService.Core.Service
 
                 var token = await _jwtService.GenerateJWT(tokendetails.usertype, tokendetails.username);
 
-                var response = new UserVM { acceesstoken = token/*, refreshtoken = token*/ };
+                var response = new  { accesstoken = token/*, refreshtoken = token*/ };
 
                 return new RequestResult
                 {
