@@ -23,7 +23,7 @@ namespace Prospa.AuthService.API.Controllers
         }
 
         [HttpPost]
-        [Route("token")]
+        [Route("authenticate")]
         [ProducesResponseType(typeof(RequestResult), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(RequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
@@ -56,7 +56,7 @@ namespace Prospa.AuthService.API.Controllers
         }
 
         [HttpPost]
-        [Route("revoketoken")]
+        [Route("revoke")]
         [ProducesResponseType(typeof(RequestResult), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(RequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]

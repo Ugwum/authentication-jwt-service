@@ -19,7 +19,7 @@ namespace Prospa.AuthService.API.Controllers
 
 
         [HttpPost]
-        [Route("keyexchange")]
+        [Route("key-exchange")]
         public async Task<IActionResult> ExchangeKey()
         {
             try
