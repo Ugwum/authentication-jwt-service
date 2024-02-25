@@ -27,7 +27,7 @@ namespace Prospa.AuthService.Core.DataAccess.Repository
             {
                return await new CacheExtensionDataManager<AuthClient>(_cacheProvider).GetAsync(clientId, async() =>
                 {
-                    return Query(c => c.secret_Id == clientId && c.is_Active == true).SingleOrDefault();
+                    return Query(c => c.secretId == clientId && c.isactive == true).SingleOrDefault();
                 });
 
             }

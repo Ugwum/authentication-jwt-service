@@ -57,8 +57,8 @@ namespace Prospa.AuthService.Core.Infrastructure
                      tokenExpiry,
                      signingCredentials
                  );
-                var header = jwtSecurityToken.Header;
-                header.Add("kid", Guid.NewGuid().ToString()); // Set the Key ID here
+                //var header = jwtSecurityToken.Header;
+                //header.Add("kid", Guid.NewGuid().ToString()); // Set the Key ID here
 
                 var token = tokenHandler.WriteToken(jwtSecurityToken);
                 return token;

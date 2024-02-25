@@ -36,5 +36,8 @@ namespace Prospa.AuthService.Core.Model
 
         public static readonly (string code, string message) LOGIN_REQUIRED = ("LOGIN_REQUIRED", "Login required. please login with username and password");
 
+        public static readonly (string code, string message) INVALID_AUTHCLIENT = ("INVALID_AUTHCLIENT", "Client microservice is invalid. Please contact admin");
+
+
     }
 }

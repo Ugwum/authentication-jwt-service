@@ -28,7 +28,7 @@ namespace Prospa.AuthService.Core.Infrastructure
             {
                 var authClient = await _authClientRepo.GetAuthClientAsync(clientId);
 
-                if (authClient == null) { throw new CustomException("INVALID_AUTHCLIENT", "Client is invalid"); }
+                if (authClient == null) { throw new CustomException(AuthStatusCode.INVALID_AUTHCLIENT.code, AuthStatusCode.INVALID_AUTHCLIENT.message); }
 
                 return  VerifyClientSignature(authClient, signature);
                  
@@ -50,11 +50,11 @@ namespace Prospa.AuthService.Core.Infrastructure
         {
             try
             {
-                var secretkeybytes = Convert.FromBase64String(authClient.secret_Key);
+                var secretkeybytes = Convert.FromBase64String(authClient.service_secretKey);
                 var encodedSignatureBytes = Encoding.UTF8.GetBytes(signature);
                 var clientId = AESCryptoProviderExtension.Decrypt(encodedSignatureBytes, secretkeybytes);
 
-                return clientId == authClient.secret_Id;
+                return clientId == authClient.service_secretid;
             }
             catch(Exception ex)
             {
