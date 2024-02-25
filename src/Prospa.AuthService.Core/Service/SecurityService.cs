@@ -37,7 +37,7 @@ namespace Prospa.AuthService.Core.Service
 
                 if (authClient == null) { throw new CustomException("INVALID_AUTHCLIENT", "Client is invalid"); }
 
-                var publickeyEncrypted = AESCryptoProviderExtension.Encrypt(await _keyPairStore.RetrievePublicKeyPair(), authClient.secret_Key);
+                var publickeyEncrypted = AESCryptoProviderExtension.Encrypt(await _keyPairStore.RetrievePublicKeyPair(), authClient.secretKey);
 
                 return new RequestResult
                 {

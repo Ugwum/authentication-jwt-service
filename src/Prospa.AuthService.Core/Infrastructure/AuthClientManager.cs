@@ -50,11 +50,11 @@ namespace Prospa.AuthService.Core.Infrastructure
         {
             try
             {
-                var secretkeybytes = Convert.FromBase64String(authClient.service_secretKey);
+                var secretkeybytes = Convert.FromBase64String(authClient.secretKey);
                 var encodedSignatureBytes = Encoding.UTF8.GetBytes(signature);
                 var clientId = AESCryptoProviderExtension.Decrypt(encodedSignatureBytes, secretkeybytes);
 
-                return clientId == authClient.service_secretid;
+                return clientId == authClient.secretId;
             }
             catch(Exception ex)
             {
