@@ -11,6 +11,8 @@ namespace Prospa.AuthService.Core.Utils
     {
         void Against(bool condition, string errorMsg, ILogger logger = null, bool throws = true);
 
+        void Against(bool condition, string errorCode, string errorMsg, ILogger logger = null, bool throws = true);
+
         void Against<T>(bool condition, string errorMsg, ILogger logger = null, bool throws = true) where T : Exception, new();
     }
 
@@ -27,6 +29,19 @@ namespace Prospa.AuthService.Core.Utils
             if (condition)
             {
                 var ex = new Exception(errorMsg);
+                (_logger ?? logger).LogError(ex.Message, ex);
+                if (throws)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        public void Against(bool condition, string errorCode, string errorMsg, ILogger logger = null, bool throws = true)
+        {
+            if (condition)
+            {
+                var ex = new CustomException(errorCode, errorMsg);
                 (_logger ?? logger).LogError(ex.Message, ex);
                 if (throws)
                 {

@@ -14,7 +14,7 @@ namespace Prospa.AuthService.Core.Service
     {
         Task<RequestResult> RetrievePublicKey(string? clientId);
     }
-    internal class SecurityService : ISecurityService
+    public class SecurityService : ISecurityService
     {
         private readonly ILogger<SecurityService> _logger;
         private readonly IKeyPairStore _keyPairStore;

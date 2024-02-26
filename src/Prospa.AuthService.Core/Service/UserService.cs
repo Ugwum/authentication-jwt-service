@@ -39,25 +39,22 @@ namespace Prospa.AuthService.Core.Service
             try
             {
                 var userValidation = await ValidateUserCredentials(username, password);
-                if (userValidation.isValid)
-                {
-                    var token = await _jwtService.GenerateJWT(userValidation.userobj.user_type, username);
 
-                    var userVM = Transform.From(userValidation.userobj);
-                    userVM.accesstoken = token;
+                _guard.Against(!userValidation.isValid, UserStatusCodes.INVALID_CREDENTIALS.code, UserStatusCodes.INVALID_CREDENTIALS.message, _logger, true);
 
-                    return new RequestResult
-                    {
-                        Succeeded = true,
-                        code = "00",
-                        data = userVM,
-                        message = "Operation successfull"
-                    };
-                }
-                else
+                var token = await _jwtService.GenerateJWT(userValidation.userobj.user_type, username);
+
+                var userVM = Transform.From(userValidation.userobj);
+                userVM.accesstoken = token;
+
+                return new RequestResult
                 {
-                    throw new CustomException(UserStatusCodes.INVALID_CREDENTIALS.code, UserStatusCodes.INVALID_CREDENTIALS.message);
-                }
+                    Succeeded = true,
+                    code = "00",
+                    data = userVM,
+                    message = "Operation successfull"
+                };
+ 
             }
             catch (CustomException ex)
             {
