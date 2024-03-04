@@ -14,8 +14,7 @@ namespace Prospa.AuthService.Core.DataAccess.Repository
     {
         private ILogger<AuthClientRepository> _logger;
         private readonly ICacheProvider _cacheProvider;
-        public AuthClientRepository(ProspaDBContext context, 
-            ICacheProvider cacheProvider, ILogger<AuthClientRepository> logger) : base(context)
+        public AuthClientRepository(ProspaDBContext context,ICacheProvider cacheProvider, ILogger<AuthClientRepository> logger) : base(context)
         {
             _logger = logger;
             _cacheProvider = cacheProvider;
@@ -37,6 +36,7 @@ namespace Prospa.AuthService.Core.DataAccess.Repository
                 throw ex;
             }
         }
+
     }
 }
 
