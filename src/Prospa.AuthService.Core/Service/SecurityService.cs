@@ -13,6 +13,8 @@ namespace Prospa.AuthService.Core.Service
     public interface ISecurityService
     {
         Task<RequestResult> RetrievePublicKey(string? clientId);
+
+        Task<RequestResult> CalculateSignature(string? clientId);
     }
     public class SecurityService : ISecurityService
     {
@@ -29,6 +31,7 @@ namespace Prospa.AuthService.Core.Service
             _authClientRepo = authClientRepo;
         }
 
+      
         public async Task<RequestResult> RetrievePublicKey(string clientId)
         {
             try 
@@ -60,5 +63,38 @@ namespace Prospa.AuthService.Core.Service
                 return new RequestResult { code = GeneralStatusCodes.UNEXPECTED_ERROR.code, data = null, message = GeneralStatusCodes.UNEXPECTED_ERROR.message, Succeeded = false };
             }
         }
+
+        public async Task<RequestResult> CalculateSignature(string? clientId)
+        {
+            try
+            {
+                var authClient = await _authClientRepo.GetAuthClientAsync(clientId);
+
+                if (authClient == null) { throw new CustomException("INVALID_AUTHCLIENT", "Client is invalid"); }
+
+                var signature = AESCryptoProviderExtension.Encrypt(clientId, authClient.secretKey);
+
+                return new RequestResult
+                {
+                    code = "Successful",
+                    data = new { signature = signature },
+                    message = "Operation successful ",
+                    Succeeded = true
+                };
+
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError($"An error occurred. {ex.code}, {ex.Message}, {ex.StackTrace}");
+                return new RequestResult { code = ex.code, data = null, message = ex.Message, Succeeded = false };
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}");
+                return new RequestResult { code = GeneralStatusCodes.UNEXPECTED_ERROR.code, data = null, message = GeneralStatusCodes.UNEXPECTED_ERROR.message, Succeeded = false };
+            }
+        }
+
     }
 }

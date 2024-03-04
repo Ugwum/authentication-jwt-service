@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Polly;
 using Prospa.AuthService.Core.DataAccess.Abstractions;
 using Prospa.AuthService.Core.DataAccess.Data;
+using Prospa.AuthService.Core.DataAccess.Repository;
 using Prospa.AuthService.Core.Model;
 using Prospa.AuthService.Core.Model.Configuration;
 using Prospa.AuthService.Core.Service.Abstractions;
@@ -21,11 +22,12 @@ namespace Prospa.AuthService.Core.Service
     {
         public readonly IJWTService _jwtService;
         private readonly ILogger<UserService> _logger;
-        private readonly IRepositoryAsync<CustomUser> _customUserRepo;
+       // private readonly IRepositoryAsync<CustomUser> _customUserRepo;
         private readonly IGuard _guard;
         private readonly AppSettings _appSettings;
+        private readonly CustomUserRepository _customUserRepo;
         public UserService(IJWTService jwtService, ILogger<UserService> logger,
-            IRepositoryAsync<CustomUser> customUserRepo, IGuard guard, IOptions<AppSettings> appSettings)
+            CustomUserRepository customUserRepo, IGuard guard, IOptions<AppSettings> appSettings)
         {
             _jwtService = jwtService;
             _logger = logger;
@@ -46,6 +48,8 @@ namespace Prospa.AuthService.Core.Service
 
                 var userVM = Transform.From(userValidation.userobj);
                 userVM.accesstoken = token;
+
+                
 
                 return new RequestResult
                 {
@@ -68,6 +72,41 @@ namespace Prospa.AuthService.Core.Service
             }
         }
 
+
+        public async Task<RequestResult> GetAuthUser(string? accesstoken)
+        {
+            try
+            {
+                var tokendetails = await _jwtService.ValidateTokenAsync(accesstoken);
+
+                _guard.Against(tokendetails.isValid == false, $"Invalid token", _logger, true);
+
+                var customUser = await _customUserRepo.GetCustomUserAsync(tokendetails.tokendetails.username.ToLower());
+
+                if (customUser == null) throw new CustomException(UserStatusCodes.INVALID_USER.code, UserStatusCodes.INVALID_USER.message);
+                 
+                var response = new { firstname = customUser.first_Name, lastname = customUser.last_Name, 
+                    email = customUser.email, customUser.date_Joined, uuid =  customUser.id, customUser.is_Staff, customUser.is_Active, customUser.phone };
+
+                return new RequestResult
+                {
+                    Succeeded = true,
+                    code = "00",
+                    data = response,
+                    message = "Operation successfull"
+                };
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}");
+                return new RequestResult { code = ex.code, data = null, message = ex.Message, Succeeded = false };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}");
+                return new RequestResult { code = GeneralStatusCodes.UNEXPECTED_ERROR.code, data = null, message = GeneralStatusCodes.UNEXPECTED_ERROR.message, Succeeded = false };
+            }
+        }
         public async Task<RequestResult> RefreshAccessToken(string expiredToken)
         {
             try
@@ -76,7 +115,7 @@ namespace Prospa.AuthService.Core.Service
 
                 _guard.Against(tokendetails == null, $"Invalid token", _logger, true);
 
-                var customUser = _customUserRepo.Query(c => c.email.ToLower() == tokendetails.username.ToLower()).SingleOrDefault();
+                var customUser = _customUserRepo.GetCustomUserAsync(tokendetails.username.ToLower());
 
                 if (customUser == null) throw new CustomException(UserStatusCodes.INVALID_USER.code, UserStatusCodes.INVALID_USER.message);
 
@@ -112,6 +151,10 @@ namespace Prospa.AuthService.Core.Service
         {
             try
             {
+                var tokendetails = await _jwtService.DecodeJWTAsync(accesstoken);
+
+                _guard.Against(tokendetails == null, $"Invalid token", _logger, true);
+
                 await _jwtService.RevokeJWT(accesstoken);
 
                 return new RequestResult
@@ -121,6 +164,11 @@ namespace Prospa.AuthService.Core.Service
                     data = null,
                     message = "Operation successfull"
                 };
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}");
+                return new RequestResult { code = ex.code, data = null, message = ex.Message, Succeeded = false };
             }
             catch (Exception ex)
             {
@@ -186,5 +234,7 @@ namespace Prospa.AuthService.Core.Service
                 throw new Exception("An error occurred");
             }
         }
+
+         
     }
 }

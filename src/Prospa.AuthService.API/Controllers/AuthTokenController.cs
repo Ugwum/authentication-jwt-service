@@ -4,9 +4,11 @@ using Prospa.AuthService.Core.Model.Validators;
 using Prospa.AuthService.Core.Model;
 using Prospa.AuthService.Core.Service.Abstractions;
 using System.Net;
+using Prospa.AuthService.Core.Filter;
 
 namespace Prospa.AuthService.API.Controllers
 {
+    //[TypeFilter(typeof(AuthClientAuthorizationFilter))]
     [Route("api/v1/auth")]
     [ApiController]
     public class AuthTokenController : ControllerBase
@@ -23,7 +25,7 @@ namespace Prospa.AuthService.API.Controllers
         }
 
         [HttpPost]
-        [Route("authenticate")]
+        [Route("token")]
         [ProducesResponseType(typeof(RequestResult), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(RequestResult), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ValidationResult), (int)HttpStatusCode.BadRequest)]
@@ -47,6 +49,30 @@ namespace Prospa.AuthService.API.Controllers
 
                 }
                 return StatusCode(StatusCodes.Status201Created, result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred, See details {ex.Message}, {ex.StackTrace}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericErrorResponse { code = "UNEXPECTED_ERROR", message = "An unexpected error occurred" });
+            }
+        }
+
+        [TypeFilter(typeof(JWTAuthorize))]
+        [HttpGet]
+        [Route("user")]
+        public async Task<IActionResult> GetAuthUser()
+        {
+            try
+            {
+                var accesstoken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last().ToString();
+
+                var result = await _userService.GetAuthUser(accesstoken);
+                if (!result.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, result);
+
+                }
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception ex)
             {

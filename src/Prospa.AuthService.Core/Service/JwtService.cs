@@ -106,6 +106,11 @@ namespace Prospa.AuthService.Core.Service
                 return ((tokenresult.securityToken != null && tokenresult.claimsPrincipal != null), tokenDetail);
 
             }
+            catch (CustomException ex)
+            {
+                _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}");
+                return (false, tokenDetail);
+            }
             catch (Exception ex)
             {
                 _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}");

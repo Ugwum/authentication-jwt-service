@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Prospa.AuthService.Core.Filter;
 using Prospa.AuthService.Core.Model;
 using Prospa.AuthService.Core.Service;
 
 namespace Prospa.AuthService.API.Controllers
 {
-    [Route("api/v1/security")]
+    //[TypeFilter(typeof(AuthClientAuthorizationFilter))]
+    [Route("api/v1/security")]   
     [ApiController]
     public class SecurityController : ControllerBase
     {
@@ -18,7 +21,7 @@ namespace Prospa.AuthService.API.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet]
         [Route("key-exchange")]
         public async Task<IActionResult> ExchangeKey()
         {
@@ -40,5 +43,31 @@ namespace Prospa.AuthService.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new GenericErrorResponse { code = "UNEXPECTED_ERROR", message = "An unexpected error occurred" });
             }
         }
+
+
+        //[AllowAnonymous]
+        [HttpPost]
+        [Route("calculate-signature")]
+        public async Task<IActionResult> CalculateSignature()
+        {
+            try
+            {
+                var clientId = Request.Headers["ClientID"].FirstOrDefault()?.Split(" ").Last().ToString();
+
+                var result = await _securityService.CalculateSignature(clientId);
+                if (!result.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, result);
+
+                }
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred, See details {ex.Message}, {ex.StackTrace}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new GenericErrorResponse { code = "UNEXPECTED_ERROR", message = "An unexpected error occurred" });
+            }
+        }
+
     }
 }
