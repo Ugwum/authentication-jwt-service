@@ -13,6 +13,8 @@ using Prospa.AuthService.Core.Service;
 using Prospa.AuthService.Core.Utils;
 using StackExchange.Redis;
 using Prospa.AuthService.Core.Middleware;
+using Serilog;
+using Prospa.AuthService.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,11 +38,13 @@ builder.Services.AddScoped<IJWTManager, JWTManager>();
 builder.Services.AddScoped<IAuthClientManager, AuthClientManager>();
 builder.Services.AddScoped<IKeyPairStore, RSAKeyPairStore>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISecurityService, SecurityService>();
 
 builder.Services.AddScoped(typeof(IRepositoryAsync<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<AuthClientRepository>();
+builder.Services.AddScoped<CustomUserRepository>();
 
 var redisConnection = builder.Configuration.GetSection("RedisConnection").Get<RedisConnection>();
 
@@ -112,6 +116,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Host.UseSerilog(ProspaLoggerExtension.ConfigureLogger);
 
 var app = builder.Build();
 
