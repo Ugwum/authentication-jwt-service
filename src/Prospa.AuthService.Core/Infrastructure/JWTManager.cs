@@ -97,12 +97,26 @@ namespace Prospa.AuthService.Core.Infrastructure
                         RequireSignedTokens = true,
                         ClockSkew = TimeSpan.Zero,
 
+                        // Add the following to handle the absence of "kid"
+                        // Set to false if "kid" is not required in the token
+                       // RequireKeySet = true,
+
+                        // If "kid" is not present in the token header, consider all keys in the key set
+                        // This may be useful in scenarios where key rotation occurs without updating "kid"
+                        // Make sure this aligns with your security requirements
+                        IssuerSigningKeys = new List<SecurityKey> { rsapublicKey },
+
                     };
 
                     var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
 
                     return (claimsPrincipal, validatedToken);
                 }
+            }
+            catch (CustomException ex)
+            {
+                _logger.LogError($"An error occurred, {ex.Message}, {ex.StackTrace}, {ex.code}");
+                throw ex;
             }
             catch (Exception ex)
             {
