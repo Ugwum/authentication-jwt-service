@@ -33,19 +33,23 @@ namespace Prospa.AuthService.Core.Middleware
             try
             {
                 using (var scope = serviceProvider.CreateScope())
-                { 
-                    var authClientManager = scope.ServiceProvider.GetRequiredService<IAuthClientManager>();
-                    
-                    var clientId = context.Request.Headers["ClientID"].FirstOrDefault()?.Split(" ").Last().ToString();
-                    var signature = context.Request.Headers["Signature"].FirstOrDefault()?.Split(" ").Last().ToString();
+                {
 
-                    if(string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(signature)) { throw new CustomException($"INVALID_AUTHCLIENT_CREDENTIAL", "ClientID or Signature missing in the header"); }
-
-                    var authClientIsValid = await authClientManager.VerifyAuthServiceClient(clientId, signature);
-
-                    if (!authClientIsValid)
+                    if (!context.Request.Path.Value.Contains("calculate-signature"))
                     {
-                        throw new CustomException($"INVALID_AUTHCLIENT", "Auth client is not valid");
+                        var authClientManager = scope.ServiceProvider.GetRequiredService<IAuthClientManager>();
+
+                        var clientId = context.Request.Headers["ClientID"].FirstOrDefault()?.Split(" ").Last().ToString();
+                        var signature = context.Request.Headers["Signature"].FirstOrDefault()?.Split(" ").Last().ToString();
+
+                        if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(signature)) { throw new CustomException($"INVALID_AUTHCLIENT_CREDENTIAL", "ClientID or Signature missing in the header"); }
+
+                        var authClientIsValid = await authClientManager.VerifyAuthServiceClient(clientId, signature);
+
+                        if (!authClientIsValid)
+                        {
+                            throw new CustomException($"INVALID_AUTHCLIENT", "Auth client is not valid");
+                        }
                     }
 
                     await _next(context);

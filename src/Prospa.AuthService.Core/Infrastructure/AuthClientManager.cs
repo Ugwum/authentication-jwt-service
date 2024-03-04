@@ -51,7 +51,9 @@ namespace Prospa.AuthService.Core.Infrastructure
             try
             {
                 var secretkeybytes = Convert.FromBase64String(authClient.secretKey);
-                var encodedSignatureBytes = Encoding.UTF8.GetBytes(signature);
+
+
+                var encodedSignatureBytes = Convert.FromBase64String(signature); //Encoding.UTF8.GetBytes(signature);
                 var clientId = AESCryptoProviderExtension.Decrypt(encodedSignatureBytes, secretkeybytes);
 
                 return clientId == authClient.secretId;
