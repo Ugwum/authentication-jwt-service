@@ -1,10 +1,10 @@
-# Prospa Authentication Service
+# Authentication Service
 
-The Prospa Authentication Service is a .NET Core application that provides token-based authentication using JSON Web Tokens (JWT). It includes features for token generation, refresh, revocation, and secure public key exchange for client validation.
+The Authentication Service is a .NET Core application that provides token-based authentication using JSON Web Tokens (JWT). It includes features for token generation, refresh, revocation, and secure public key exchange for client validation.
 
 ## Table of Contents
 
-- [Prospa Authentication Service](#prospa-authentication-service)
+- [Authentication Service](#authentication-service)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -25,7 +25,7 @@ The Prospa Authentication Service is a .NET Core application that provides token
 
 - [.NET Core SDK](https://dotnet.microsoft.com/download)
 - [Visual Studio Code](https://code.visualstudio.com/) or any preferred IDE
-- Prospa Auth Service source code
+- Auth Service source code
 
 ### Installation
 
@@ -34,7 +34,7 @@ The Prospa Authentication Service is a .NET Core application that provides token
    git clone git@bitbucket.org:prospabot/prospa-mobile-app.git
 2. Navigate to the project folder:
     ```bash
-    cd Prospa.AuthService.API
+    cd AuthService.API
 3. Build and run the application 
      ```bash
     dotnet build
