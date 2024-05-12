@@ -31,7 +31,7 @@ The Authentication Service is a .NET Core application that provides token-based 
 
 1. Clone the repository:
    ```bash
-   git clone git@bitbucket.org:prospabot/prospa-mobile-app.git
+   git clone https://github.com/Ugwum/authentication-jwt-service.git
 2. Navigate to the project folder:
     ```bash
     cd AuthService.API
