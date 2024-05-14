@@ -80,7 +80,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Prospa Auth Token Service ",
+        Title = "Auth Token Service ",
         Version = "v1",
         Description = "REST Service for Token Authentication and Authorization"
     });
